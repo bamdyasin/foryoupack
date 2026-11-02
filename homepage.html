@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ForYouPack Budget Selector</title>
+
+<!-- External Assets for Header & Menubar (From Theme) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background-color: #0b0e11;
+    min-height: 100%;
+}
+
+:root {
+    --primary-color: #fe2c55;
+    --secondary-color: #0a192f;
+    --gold-primary: #ffd700;
+    --gold-gradient: linear-gradient(135deg, #ffd700, #daa520);
+    --dark-bg: #0b0e11;
+    --tabs-bg: #0d213d;
+}
+
+body {
+    margin: 0;
+    padding: 85px 20px 40px 20px;
+    background: radial-gradient(circle at 0% 0%, #161a2e 0%, #0b0e11 100%);
+    background-attachment: fixed;
+    font-family: 'Hind Siliguri', Arial, sans-serif;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+/* ==========================================
+   HEADER & NAVBAR (From theme.xml)
+========================================== */
+header {
+    background-color: #0a192f;
+    padding: 0.6rem 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    font-family: 'Hind Siliguri', Arial, sans-serif;
+}
+
+.logo a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.header-search {
+    width: clamp(150px, 40vw, 250px);
+    background: #1a2a47;
+    border: 1px solid #fe2c55;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 1px;
+    display: flex;
+    align-items: center;
+}
+
+.header-search input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 2px 10px;
+    font-size: 0.7rem;
+    height: 28px;
+    flex: 1;
+    min-width: 0;
+    outline: none;
+    font-family: inherit;
+}
+
+.header-search input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.header-search button {
+    background: #fe2c55;
+    border: none;
+    border-radius: 20px;
+    padding: 0 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    height: 28px;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.2s ease;
+    font-family: inherit;
+}
+
+.header-search button:hover {
+    opacity: 0.9;
+}
+
+.menu-toggle {
+    cursor: pointer;
+    color: #ffd700;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    user-select: none;
+}
+
+nav#nav-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: #0a192f;
+    transition: 0.3s ease;
+    z-index: 2000;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+    overflow-y: auto;
+    font-family: 'Hind Siliguri', Arial, sans-serif;
+}
+
+nav#nav-menu.active {
+    right: 0;
+}
+
+nav#nav-menu ul {
+    list-style: none;
+    padding: 10px 20px;
+    margin: 0;
+}
+
+nav#nav-menu ul li a {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: white !important;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: 0.2s ease;
+}
+
+nav#nav-menu ul li a:hover {
+    color: #fe2c55 !important;
+    padding-left: 18px;
+}
+
+.me-2 {
+    margin-right: 0.5rem;
+}
+
+.nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1999;
+}
+
+.nav-overlay.active {
+    display: block;
+}
+
+/* Modals for Status Check */
+.modal-overlay {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.85);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    font-family: 'Hind Siliguri', Arial, sans-serif;
+}
+
+.custom-modal-content {
+    background: #0a192f;
+    border-radius: 20px;
+    color: white;
+    margin: auto;
+    padding: 24px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.budget-card {
+    max-width: 440px;
+    margin: 30px auto;
+    padding: 26px;
+    background: rgba(30, 41, 59, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.hero-subtitle {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 600;
+}
+
+.hero-slogan {
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    margin-bottom: 22px;
+}
+
+.badge-wrapper {
+    text-align: center;
+}
+
+.trial-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(254, 44, 85, 0.15);
+    color: #fe2c55;
+    border: 1px solid rgba(254, 44, 85, 0.35);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+}
+
+.budget-label {
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.step-btn {
+    width: 52px;
+    height: 52px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-btn:hover:not(:disabled) {
+    background: rgba(254, 44, 85, 0.25);
+    border-color: #fe2c55;
+    color: #fe2c55;
+    transform: translateY(-2px);
+}
+
+.step-btn:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.step-btn:disabled {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.2);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.budget-display {
+    flex: 1;
+    min-width: 0;
+    height: 56px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: #25f4ee;
+    background: rgba(13, 33, 61, 0.6);
+    text-shadow: 0 0 15px rgba(37, 244, 238, 0.3);
+}
+
+.trial-text {
+    text-align: center;
+    font-size: 13px;
+    color: #ffd700;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.result-box {
+    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+.result-title {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.estimate-hr {
+    border: 0;
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    margin: 10px 0;
+}
+
+.estimate-badges-wrap,
+.d-flex {
+    display: flex !important;
+}
+
+.flex-wrap {
+    flex-wrap: wrap !important;
+}
+
+.justify-content-center {
+    justify-content: center !important;
+}
+
+.gap-3 {
+    gap: 12px !important;
+}
+
+.estimate-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+}
+
+.estimate-badge i {
+    color: #fe2c55;
+    font-size: 0.88rem;
+}
+
+.estimate-badge label {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0;
+    font-size: 0.82rem;
+}
+
+.estimate-badge span.count-target {
+    font-weight: 700;
+    color: #3b82f6;
+    font-size: 0.9rem;
+}
+
+.lowest-badge {
+    color: #3B82F6 !important;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.form-group input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 11px;
+    outline: none;
+    font-size: 14px;
+    color: #ffffff;
+    font-family: inherit;
+    transition: 0.25s ease;
+}
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.form-group input:focus {
+    border-color: #25F4EE;
+    box-shadow: 0 0 0 3px rgba(37, 244, 238, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.form-select {
+    width: 100%;
+    height: 48px;
+    padding: 0 38px 0 14px;
+    background-color: #0a192f;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 16px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 11px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.form-select:focus {
+    border-color: #25F4EE;
+    box-shadow: 0 0 0 3px rgba(37, 244, 238, 0.15);
+}
+
+.form-select option {
+    background-color: #0a192f;
+    color: #ffffff;
+    padding: 10px;
+}
+
+.text-tiktok-sm {
+    color: #25f4ee;
+    font-size: 0.8rem;
+}
+
+.error {
+    color: #fe2c55;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+}
+
+/* Payment Method & Info Box (From theme.xml) */
+.payment-info-box {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.payment-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.payment-info-method {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.payment-badge {
+    background: #0d6efd;
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+.payment-info-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-number {
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    font-family: 'Hind Siliguri', monospace, sans-serif;
+}
+
+.copy-btn {
+    background: transparent;
+    border: none;
+    color: #25f4ee;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 6px;
+    transition: background 0.2s, opacity 0.2s;
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.copy-btn:hover {
+    background: rgba(37, 244, 238, 0.1);
+    opacity: 0.9;
+}
+
+.order-btn {
+    width: 100%;
+    height: 52px;
+    border: none;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #fe2c55 0%, #ee1d52 100%);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(254, 44, 85, 0.35);
+    transition: 0.25s ease;
+    font-family: inherit;
+}
+
+.order-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(254, 44, 85, 0.5);
+}
+
+.order-btn:active {
+    transform: scale(0.98);
+}
+
+.success-message {
+    display: none;
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 12px;
+    background: rgba(37, 211, 102, 0.15);
+    border: 1px solid rgba(37, 211, 102, 0.3);
+    color: #2ecc71;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN (Small Devices)
+========================================== */
+@media (max-width: 576px) {
+    body {
+        padding: 52px 0 0 0;
+    }
+    .budget-card {
+        margin: 0;
+        max-width: 100%;
+        width: 100%;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        box-shadow: none;
+        padding: 20px 16px 30px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    header { padding: 0.6rem 12px; }
+    .header-search { width: 180px !important; }
+}
+
+@media (max-width: 360px) {
+    .header-search { width: 160px !important; }
+    .logo img { height: 28px !important; }
+    .budget-card {
+        padding: 16px 12px 25px 12px;
+    }
+}
+
+/* ==========================================
+   APP-CARD, FAQ, TESTIMONIALS & FOOTER (From theme.xml)
+========================================== */
+.app-card {
+    background: rgba(30, 41, 59, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 24px 26px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-sizing: border-box;
+    max-width: 440px;
+    margin: 18px auto 0 auto;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+.app-card.app-card-faq {
+    margin-top: 18px;
+}
+
+.app-card.app-card-testimonials {
+    margin-top: 18px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 576px) {
+    .budget-card {
+        margin: 0;
+        max-width: 100%;
+        width: 100%;
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: none;
+        padding: 20px 16px 25px 16px;
+    }
+    .app-card {
+        padding: 20px 16px !important;
+        margin: 14px 0 0 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: none !important;
+    }
+    .app-card.app-card-testimonials {
+        margin-top: 14px !important;
+        margin-bottom: 0 !important;
+    }
+    footer {
+        margin: 20px 0 0 0 !important;
+        padding: 35px 16px 80px 16px !important;
+    }
+}
+
+/* Custom Accordion */
+.custom-accordion .accordion-item { 
+    background: rgba(255, 255, 255, 0.03) !important; 
+    border-radius: 14px !important; 
+    margin-bottom: 10px;
+    border: none !important;
+    overflow: hidden;
+    transition: 0.3s;
+}
+.custom-accordion .accordion-button { 
+    background: transparent !important; 
+    color: white !important; 
+    font-weight: bold; 
+    border-radius: 0 !important; 
+    padding: 14px 18px;
+    box-shadow: none !important;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    text-align: left;
+    transition: 0.25s ease;
+}
+.custom-accordion .accordion-button:not(.collapsed) { 
+    color: #fe2c55 !important; 
+    background: rgba(254, 44, 85, 0.05) !important;
+    border-left: 4px solid #fe2c55 !important;
+}
+.custom-accordion .accordion-button::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-size: 16px;
+    transition: transform 0.2s ease-in-out;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+.custom-accordion .accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fe2c55'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    transform: rotate(-180deg);
+}
+.accordion-collapse.collapse {
+    display: none;
+}
+.accordion-collapse.collapse.show {
+    display: block;
+}
+.custom-accordion .accordion-body {
+    border-left: 4px solid #fe2c55;
+    padding: 0 18px 16px 18px !important;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* Testimonials */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+.testimonial-card { 
+    background: rgba(255, 255, 255, 0.03); 
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    padding: 22px; 
+    border-radius: 20px; 
+    transition: 0.3s; 
+    height: 100%; 
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+.testimonial-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(254, 44, 85, 0.3);
+}
+.stars { color: #ffc107; font-size: 0.85rem; letter-spacing: 2px; }
+.avatar-sm { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.bg-tiktok { background: #fe2c55 !important; }
+
+/* Full Footer */
+footer { 
+    background: rgba(10, 25, 47, 0.95); 
+    border-top: 1px solid rgba(255, 215, 0, 0.1); 
+    padding: 50px 20px 60px 20px; 
+    margin: 50px -20px -40px -20px; 
+    box-sizing: border-box;
+}
+@media (max-width: 576px) {
+    footer {
+        margin: 40px 0 0 0 !important;
+        padding: 40px 16px 80px 16px !important;
+    }
+}
+.contact-item { 
+    width: 45px; 
+    height: 45px; 
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(255, 215, 0, 0.2); 
+    border-radius: 12px; 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: white; 
+    text-decoration: none; 
+    transition: 0.3s; 
+    font-size: 1.1rem;
+}
+.contact-item:hover { 
+    background: #ffd700; 
+    color: #0a192f; 
+    transform: translateY(-3px); 
+}
+.footer-nav-link {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    margin: 0 8px;
+    transition: 0.2s;
+}
+.footer-nav-link:hover {
+    color: #25f4ee;
+}
+
+/* WhatsApp Floating Button */
+.whatsapp-premium { 
+    position: fixed; 
+    bottom: 30px; 
+    right: 30px; 
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%); 
+    color: #fff !important; 
+    border-radius: 50px; 
+    padding: 12px 24px; 
+    z-index: 1000; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 10px; 
+    text-decoration: none !important; 
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(18, 140, 126, 0.4);
+    animation: whatsapp-pulse 2s infinite;
+    font-size: 0.95rem;
+}
+@media (max-width: 576px) {
+    .whatsapp-premium {
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 18px;
+        font-size: 0.85rem;
+    }
+}
+@keyframes whatsapp-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+</style>
+</head>
+
+<body>
+
+    <!-- Header (From theme.xml) -->
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img alt="Logo" src="/favicon.ico" style="height: 35px; width: 35px; display: block; border-radius: 50%; background: white; padding: 2px; object-fit: contain;">
+            </a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="input-group d-flex header-search">
+                <input class="form-control form-control-sm" id="header_trxid_search" placeholder="TrxID লিখুন..." type="text" onkeydown="if(event.key==='Enter')checkStatus()">
+                <button class="btn btn-sm btn-danger" onclick="checkStatus()" type="button">Check</button>
+            </div>
+            <div class="menu-toggle" onclick="openNavMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+        <nav id="nav-menu">
+            <div onclick="closeNavMenu()" style="position:absolute; top:20px; right:20px; color:#ffd700; font-size:1.5rem; cursor:pointer;">
+                <i class="fas fa-times"></i>
+            </div>
+            <div style="padding: 25px 20px 10px 25px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <h4 style="color: #ffd700; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-bars-staggered" style="font-size: 1.2rem;"></i> Menu
+                </h4>
+            </div>
+            <ul>
+                <li><a href="/"><i class="fas fa-home me-2"></i> Home</a></li>
+                <li><a href="https://www.coinstore.bd/p/business-solutions.html"><i class="fas fa-coins me-2"></i> Get Coin</a></li>
+                <li><a href="/search/label/TikTok-Tips"><i class="fas fa-blog me-2"></i> TikTok Tips</a></li>
+                <li><a href="/search/label/News"><i class="fas fa-newspaper me-2"></i> News</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="nav-overlay" id="navOverlay" onclick="closeNavMenu()"></div>
+
+    <!-- Status Search Modals (From theme.xml) -->
+    <div class="modal-overlay" id="searchErrorModal">
+        <div class="custom-modal-content text-center" style="max-width: 350px; border: 1px solid #fe2c55; border-radius: 25px;">
+            <div style="margin-bottom: 12px;"><i class="bi bi-exclamation-triangle-fill" style="font-size:3rem; color:#fe2c55;"></i></div>
+            <h4 style="font-weight:800; color:white; margin: 0 0 10px 0;">ভুল হয়েছে!</h4>
+            <p style="color:rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 20px;">অনুগ্রহ করে একটি সঠিক TrxID লিখুন।</p>
+            <button onclick="document.getElementById('searchErrorModal').style.display='none'" style="background:#fe2c55; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:700; width:100%; cursor:pointer;">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="statusModal">
+        <div class="custom-modal-content" style="max-width:450px; width:90%; border: 1px solid #ffd700;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h4 style="font-weight:bold; margin:0;" id="statusModalTitle">অর্ডার স্ট্যাটাস</h4>
+                <button onclick="document.getElementById('statusModal').style.display='none'" style="background:transparent; border:none; color:white; font-size:1.4rem; cursor:pointer; line-height:1;">✕</button>
+            </div>
+            <div id="statusResult"></div>
+            <button onclick="document.getElementById('statusModal').style.display='none'" style="background:transparent; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.4); border-radius:12px; font-size:0.85rem; padding:10px; width:100%; margin-top:16px; cursor:pointer;">বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <!-- Custom Copy Modal (From theme.xml) -->
+    <div class="modal-overlay" id="copyModal" onclick="if(event.target === this) this.style.display='none'">
+        <div class="custom-modal-content text-center" style="max-width: 350px; border: 1px solid #3b82f6; border-radius: 25px; text-align: center;">
+            <div style="margin-bottom: 12px;"><i class="bi bi-clipboard-check-fill" style="font-size:3rem; color:#3b82f6;"></i></div>
+            <h4 style="font-weight:800; color:white; margin: 0 0 10px 0;">কপি সফল!</h4>
+            <p style="color:rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 20px;" id="copyMessage">নম্বরটি কপি করা হয়েছে</p>
+            <button onclick="document.getElementById('copyModal').style.display='none'" style="background:#fe2c55; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:700; width:100%; cursor:pointer;">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <!-- Order Success Popup Modal -->
+    <div class="modal-overlay" id="orderSuccessModal" onclick="if(event.target === this) closeOrderSuccessModal()">
+        <div class="custom-modal-content text-center" style="max-width: 400px; width: 90%; border: 1px solid #2ecc71; box-shadow: 0 0 25px rgba(46, 204, 113, 0.25); border-radius: 20px; padding: 25px 20px; text-align: center;">
+            <div style="margin-bottom: 12px;">
+                <i class="bi bi-check-circle-fill" style="font-size: 3.2rem; color: #2ecc71;"></i>
+            </div>
+            <h3 style="font-weight: 800; color: #ffffff; margin: 0 0 8px 0; font-size: 1.35rem;">অর্ডার সফল হয়েছে!</h3>
+            <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">
+                আপনার অর্ডার তথ্য সফলভাবে গ্রহণ করা হয়েছে। খুব শীঘ্রই ডেলিভারি শুরু হবে।
+            </p>
+            <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px 15px; margin-bottom: 18px; text-align: left; font-size: 0.85rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                    <span style="color: rgba(255,255,255,0.6);">প্রমোটের ধরন</span>
+                    <span id="successModalPromo" style="font-weight: 700; color: #ffffff;">-</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                    <span style="color: rgba(255,255,255,0.6);">বাজেট</span>
+                    <span id="successModalBudget" style="font-weight: 700; color: #25f4ee;">-</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: rgba(255,255,255,0.6);">TrxID</span>
+                    <span id="successModalTrxid" style="font-weight: 700; color: #ffd700; font-family: monospace;">-</span>
+                </div>
+            </div>
+            <a id="successModalWaBtn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #25d366 0%, #128c7e 100%); color: white; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 0.95rem; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);">
+                <i class="fab fa-whatsapp" style="font-size: 1.25rem;"></i> হোয়াটসঅ্যাপে নিশ্চিত করুন
+            </a>
+            <button onclick="closeOrderSuccessModal()" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: white; padding: 10px 20px; border-radius: 12px; font-weight: 600; width: 100%; cursor: pointer;">ঠিক আছে</button>
+        </div>
+    </div>
+
+<div class="budget-card">
+
+    <div class="hero-section">
+        <span class="hero-subtitle">Premium Growth Service</span>
+        <h1 class="hero-slogan">ভাইরাল হোন <span style="color: #fe2c55; -webkit-text-fill-color: #fe2c55;">নিজের স্টাইলে</span></h1>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label for="promoType" style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.75); text-align: center;">
+            <i class="bi bi-caret-right-fill text-tiktok-sm"></i>
+            <span>প্যাকেজ নির্বাচন করুন</span>
+            <i class="bi bi-caret-left-fill text-tiktok-sm"></i>
+        </label>
+        <select class="form-select" id="promoType">
+            <option value="Video Views">ভিডিও ভিউ বাড়ান</option>
+            <option value="Likes &amp; Comments">লাইক এবং কমেন্ট</option>
+            <option value="More Followers">ফলোয়ার বাড়ান</option>
+        </select>
+    </div>
+
+
+    <div class="stepper">
+
+        <button
+            type="button"
+            class="step-btn"
+            id="minusBtn">
+            −
+        </button>
+
+        <div
+            class="budget-display"
+            id="budgetDisplay">
+            50
+        </div>
+
+        <button
+            type="button"
+            class="step-btn"
+            id="plusBtn">
+            +
+        </button>
+
+    </div>
+
+    <div class="result-box" id="estimate_box">
+
+        <div class="result-title" id="resultTitle">
+            <span style="color:#fe2c55; font-weight:700;">✔ </span><span id="resultTitleAmount" style="color:#fe2c55; font-weight:700;"></span><span style="color:#fe2c55; font-weight:700;"> টাকা</span> অনুযায়ী সম্ভাব্য ফলাফল:
+        </div>
+
+        <div id="estimate_results"></div>
+
+        <span id="resultDisplay" style="display:none;"></span>
+
+    </div>
+
+    <form id="orderForm" novalidate>
+
+        <div class="form-group">
+
+            <label for="tiktokLink">
+                <i class="bi bi-caret-right-fill me-1 text-tiktok-sm"></i>টিকটক ভিডিও লিংক দিন
+            </label>
+
+            <input
+                type="url"
+                id="tiktokLink"
+                placeholder="https://www.tiktok.com/..."
+                autocomplete="off">
+
+            <div class="error" id="linkError">
+                সঠিক টিকটক ভিডিও লিংক দিন।
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="whatsapp">
+                <i class="bi bi-caret-right-fill me-1 text-tiktok-sm"></i>WhatsApp Number (আপনার)
+            </label>
+
+            <input
+                type="tel"
+                id="whatsapp"
+                placeholder="01XXXXXXXXX"
+                inputmode="numeric"
+                maxlength="11"
+                autocomplete="off">
+
+            <div class="error" id="whatsappError">
+                সঠিক মোবাইল নম্বর দিন।
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <select
+                class="form-select"
+                id="payment_method"
+                onchange="updatePaymentInfo()"
+                required>
+                <option disabled selected value="">পেমেন্ট মাধ্যম বেছে নিন</option>
+            </select>
+
+            <div class="error" id="paymentMethodError">
+                অনুগ্রহ করে একটি পেমেন্ট মাধ্যম নির্বাচন করুন।
+            </div>
+
+            <div class="payment-info-box" id="payment_info_box" style="display: none;">
+                <div class="payment-info-header">
+                    <span class="payment-info-method" id="method_display">bKash</span>
+                    <span class="payment-badge" id="account_type">Personal</span>
+                </div>
+                <div class="payment-info-body">
+                    <span class="payment-number" id="payment_number">017XXXXXXXX</span>
+                    <button type="button" class="copy-btn" onclick="copyNumber()">
+                        <i class="bi bi-copy me-1"></i> Copy
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="paymentInfo">
+                <i class="bi bi-caret-right-fill me-1 text-tiktok-sm"></i>ট্রানজেকশন আইডি (TrxID)
+            </label>
+
+            <input
+                type="text"
+                id="paymentInfo"
+                name="trxid"
+                placeholder="এখানে TrxID লিখুন"
+                maxlength="60"
+                autocomplete="off">
+
+            <div class="error" id="paymentError">
+                অনুগ্রহ করে আপনার ট্রানজেকশন আইডি (TrxID) লিখুন।
+            </div>
+
+            <div class="error" id="trxidDuplicateError" style="display:none;">
+                ⚠️ এই TrxID দিয়ে ইতিমধ্যে অর্ডার করা হয়েছে!
+            </div>
+
+            <small class="text-tiktok-sm" style="display: block; margin-top: 6px; font-size: 11.5px; color: rgba(37, 244, 238, 0.9);">
+                <i class="bi bi-info-circle me-1"></i> টাকা পাঠানোর পর মেসেজে <b>TrxID</b> পাবেন।
+            </small>
+
+        </div>
+
+        <button
+            type="submit"
+            class="order-btn"
+            id="orderSubmitBtn">
+
+            অর্ডার করুন এখনই
+
+        </button>
+
+    </form>
+
+    <!-- জরুরি নির্দেশনা (ForYouPack) -->
+    <hr style="border: none; border-top: 1px dotted rgba(255, 255, 255, 0.2); margin: 25px 0;">
+    <div style="padding: 0 4px;">
+        <h6 style="font-weight: 700; color: #ffffff; margin: 0 0 12px 0; font-size: 0.95rem; display: flex; align-items: center;">
+            <i class="bi bi-info-circle text-warning" style="color: #ffc107; margin-right: 8px;"></i> জরুরি নির্দেশনা:
+        </h6>
+        <ul style="color: rgba(255, 255, 255, 0.6); font-size: 0.85rem; margin: 0; padding-left: 20px; line-height: 1.6;">
+            <li style="margin-bottom: 8px;"><b style="color: #fff;">ট্রায়াল অফার</b> নতুন গ্রাহকদের জন্য প্রযোজ্য।</li>
+            <li style="margin-bottom: 8px;"><b style="color: #fff;">প্রমোশন সার্ভিস</b> অর্ডার করার ৩-৫ মিনিটের মধ্যে ডেলিভারি শুরু হয়।</li>
+            <li style="margin-bottom: 8px;">ভিডিও অবশ্যই পাবলিক হতে হবে (Private ভিডিওতে কাজ হবে না)।</li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- গ্রাহকদের মতামত (Testimonials - ForYouPack) -->
+<div class="app-card app-card-testimonials">
+    <h4 style="font-weight: 700; color: #ffffff; margin: 0 0 20px 0; font-size: 1.25rem; display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center;">
+        <i class="bi bi-chat-quote-fill text-tiktok-sm" style="color: #25f4ee; font-size: 1.25rem;"></i>
+        <span>গ্রাহকদের মতামত</span>
+    </h4>
+    <div class="testimonials-grid">
+        <div class="testimonial-card">
+            <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.88rem; font-style: italic; margin: 0 0 20px 0; line-height: 1.6;">
+                "আলহামদুলিল্লাহ, ফরইউ প্যাকের সার্ভিস অনেক ভালো। ভিডিও দেওয়ার কিছুক্ষণ পরই ভিউ ও লাইক বাড়তে শুরু করে। আমি একাধিক বার সার্ভিস নিয়েছি। Highly recommended!"
+            </p>
+            <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center;">
+                        <div class="avatar-sm bg-tiktok" style="margin-right: 10px;">
+                            <i class="bi bi-person text-white"></i>
+                        </div>
+                        <div>
+                            <h6 style="margin: 0; color: #ffffff; font-size: 0.85rem; font-weight: 700;">Tanvir Ahmed</h6>
+                            <small class="text-tiktok-sm" style="font-size: 0.65rem; color: #25f4ee;">টিকটক কনটেন্ট ক্রিয়েটর</small>
+                        </div>
+                    </div>
+                    <div class="stars">★★★★★</div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.88rem; font-style: italic; margin: 0 0 20px 0; line-height: 1.6;">
+                "ওনাদের সার্ভিস অনেক ভালো ও ফাস্ট। অর্ডার করার ৫ মিনিটের মধ্যে কাজ শুরু হয়ে যায়। ট্রায়াল প্যাকেজ নিয়ে টেস্ট করেছিলাম, এখন রেগুলার নিচ্ছি।"
+            </p>
+            <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center;">
+                        <div class="avatar-sm bg-tiktok" style="margin-right: 10px;">
+                            <i class="bi bi-person text-white"></i>
+                        </div>
+                        <div>
+                            <h6 style="margin: 0; color: #ffffff; font-size: 0.85rem; font-weight: 700;">Rahat Kabir</h6>
+                            <small class="text-tiktok-sm" style="font-size: 0.65rem; color: #25f4ee;">ভিডিও ক্রিয়েটর</small>
+                        </div>
+                    </div>
+                    <div class="stars">★★★★★</div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.88rem; font-style: italic; margin: 0 0 20px 0; line-height: 1.6;">
+                "অনেক ভালো সার্ভিস ও সাপোর্ট দিয়ে থাকে। আমার প্রোফাইলের ফলোয়ার ও ভিউ অর্গানিকভাবে বাড়াতে অনেক সাহায্য করেছে। আমি ১০০% রিকমেন্ড করি।"
+            </p>
+            <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center;">
+                        <div class="avatar-sm bg-tiktok" style="margin-right: 10px;">
+                            <i class="bi bi-person text-white"></i>
+                        </div>
+                        <div>
+                            <h6 style="margin: 0; color: #ffffff; font-size: 0.85rem; font-weight: 700;">Sultana Kamal</h6>
+                            <small class="text-tiktok-sm" style="font-size: 0.65rem; color: #25f4ee;">ডিজিটাল ক্রিয়েটর</small>
+                        </div>
+                    </div>
+                    <div class="stars">★★★★☆</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FULL FOOTER (ForYouPack) -->
+<footer>
+    <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+        <div style="margin-bottom: 25px;">
+            <h3 style="color: #ffd700; font-weight: 800; margin: 0 0 10px 0; font-size: 1.8rem; letter-spacing: 1px;">FORYOUPACK.COM</h3>
+            <p style="color: rgba(255, 255, 255, 0.6); max-width: 600px; margin: 0 auto; font-size: 0.9rem; line-height: 1.6;">
+                বাংলাদেশের অন্যতম নির্ভরযোগ্য সোশ্যাল মিডিয়া প্রমোশন প্ল্যাটফর্ম। আপনার টিকটক ভিডিও দ্রুত ভাইরাল করতে এবং সঠিক দর্শকের কাছে পৌঁছাতে আমরা দিচ্ছি বিশ্বস্ত ও সাশ্রয়ী প্রমোশন সার্ভিস।
+            </p>
+        </div>
+        <div style="margin-bottom: 25px;">
+            <h5 id="footer-social-title" style="color: #ffffff; margin: 0 0 15px 0; font-size: 1.1rem; font-weight: 600;">আমাদের সাথে যুক্ত হোন</h5>
+            <div id="footer-social-links" style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <a class="contact-item" href="https://facebook.com/bamdyasin" id="fb-footer-link" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a class="contact-item" href="https://wa.me/8801845464034" id="wa-footer-link" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a class="contact-item" href="https://tiktok.com/@coinstorebd" id="tiktok-footer-link" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a class="contact-item" href="https://youtube.com/@coinstorebd" id="yt-footer-link" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a class="contact-item" href="#" id="insta-footer-link" target="_blank" title="Instagram" style="display: none;"><i class="fab fa-instagram"></i></a>
+                <a class="contact-item" href="#" id="tg-footer-link" target="_blank" title="Telegram" style="display: none;"><i class="fab fa-telegram-plane"></i></a>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 25px; margin-top: 25px;">
+            <div style="margin-bottom: 12px; font-size: 0.85rem;">
+                <a class="footer-nav-link" href="/p/about-us.html">About Us</a> |
+                <a class="footer-nav-link" href="/p/contact-us.html">Contact Us</a> |
+                <a class="footer-nav-link" href="/p/privacy-policy.html">Privacy Policy</a> |
+                <a class="footer-nav-link" href="/p/terms-and-conditions.html">Terms &amp; Conditions</a>
+            </div>
+            <p style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); margin: 0;">© 2026 FORYOUPACK.COM - All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- WHATSAPP FLOATING BUTTON (Controlled from siteConfig) -->
+<a class="whatsapp-premium" href="https://wa.me/8801845464034" id="wa-float-btn" target="_blank" title="WhatsApp Chat">
+    <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i>
+    <span id="wa-float-text">চ্যাট করুন</span>
+</a>
+
+
+<script>
+
+/* ==========================================================================
+   ⚙️ MASTER CONFIGURATION (সহজে পরিবর্তনের জন্য সব সেটিংস একসাথে)
+   ==========================================================================
+   Ekhane apnar dorkari shob setting eksathe ache:
+   1. Trial Price (Notun customer-er jonno price)
+   2. Standard Price (Standard package-er base price)
+   3. Payment Numbers (bKash, Nagad number)
+   4. Elements Result / Rates (View, Like, Comment, Follower calculation)
+   ========================================================================== */
+
+const siteConfig = {
+    // ------------------------------------------
+    // 1. PACKAGE PRICES & LABELS (প্যাকেজ মূল্য ও টেক্সট)
+    // ------------------------------------------
+    trialPackageText: 'ট্রায়াল অফার প্যাকেজ মাত্র {amount} টাকা',
+    standardPackageText: 'রেগুলার প্যাকেজ মাত্র {amount} টাকা',
+    budgetPrefix: '',           // Shudhu shongkha display hobe ('মাত্র' baad)
+    budgetSuffix: '',           // Shudhu shongkha display hobe ('টাকা' baad)
+    trialPrice: 50,             // Notun customer-der Trial package-er price (Tk)
+    standardPrice: 230,         // Standard package base price (Tk) - Stepper-e gun (*) hoye barbe
+    coinRate: 2.30,             // Coin rate (100 coins = 230 tk)
+
+    // ------------------------------------------
+    // 2. PAYMENT NUMBERS (পেমেন্ট নম্বরসমূহ)
+    // ------------------------------------------
+    payments: {
+        'bKash Number': { number: '01845464034', type: 'Personal' },
+        'Nagad Number': { number: '01845464034', type: 'Personal' }
+    },
+
+    // ------------------------------------------
+    // 3. ELEMENTS RESULT RATES (১ টাকায় সম্ভাব্য ফলাফল ক্যালকুলেশন)
+    // ------------------------------------------
+    resultRates: {
+        'Video Views': { 
+            view: 25,           // ১ টাকায় ২৫ ভিউ
+            like: 10,           // ১ টাকায় ১০ লাইক
+            comment: 0, 
+            follower: 0 
+        },
+        'Likes & Comments': { 
+            view: 20,           // ১ টাকায় ২০ ভিউ
+            like: 0, 
+            comment: 10,        // ১ টাকায় ১০ কমেন্ট
+            follower: 0 
+        },
+        'More Followers': { 
+            view: 17,           // ১ টাকায় ১৭ ভিউ
+            like: 0, 
+            comment: 0, 
+            follower: 3.1       // ১ টাকায় ৩.১ ফলোয়ার
+        }
+    },
+
+    // ------------------------------------------
+    // 4. TELEGRAM ADMIN NOTIFICATION (অর্ডার নোটিফিকেশন সেটিংস)
+    // ------------------------------------------
+    telegramBotToken: '9262575080:AAHSYQpcX60Gpp5SLZcJCFue7eHvxhU6thc', // Bot Token (@BotFather থেকে)
+    telegramChatId:   '9110445025',                                         // Admin-er Telegram Chat ID
+    telegramNotify:   true,                                                 // true = notify on, false = off
+
+    // ------------------------------------------
+    // 5. CONTACT & SOCIAL LINKS (যোগাযোগ ও সোশ্যাল লিংক কন্ট্রোল)
+    // ------------------------------------------
+    whatsappNumber: '8801845464034',
+    whatsappChatText: 'চ্যাট করুন',                              // Floating WhatsApp button-er lekha
+    whatsappDefaultMessage: 'আসসালামু আলাইকুম! আমি ForYouPack সার্ভিস সম্পর্কে জানতে চাই।', // Chat open korle pre-filled message
+    showWhatsappChat: true,                                      // true = floating button dekhabe, false = hide hobe
+    socialTitle: 'আমাদের সাথে যুক্ত হোন',                         // Footer social section-er title
+    socialLinks: {
+        facebook: 'https://facebook.com/bamdyasin',
+        whatsapp: 'https://wa.me/8801845464034',
+        tiktok: 'https://tiktok.com/@coinstorebd',
+        youtube: 'https://youtube.com/@coinstorebd',
+        instagram: '',                                           // Link dile footer-e auto Instagram icon show hobe
+        telegram: '',                                            // Link dile footer-e auto Telegram icon show hobe
+        location: 'https://maps.google.com/?q=Your+Location'
+    }
+};
+
+// Aliases for compatibility
+siteConfig.rates = siteConfig.resultRates;
+siteConfig.trialBudget = siteConfig.trialPrice;
+siteConfig.standardBasePrice = siteConfig.standardPrice;
+
+window.siteConfig = siteConfig;
+
+function toBengaliNumber(num) {
+    if (num === undefined || num === null) return '';
+    const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    return String(num).replace(/[0-9]/g, d => bnDigits[Number(d)]);
+}
+
+
+/* ==========================================
+   ELEMENTS (UI সিলেক্টরসমূহ)
+========================================== */
+
+const budgetDisplay =
+    document.getElementById("budgetDisplay");
+
+const resultDisplay =
+    document.getElementById("resultDisplay");
+
+const orderAmount = null; // amount span removed from button UI
+
+const minusBtn =
+    document.getElementById("minusBtn");
+
+const plusBtn =
+    document.getElementById("plusBtn");
+
+const trialBadge =
+    document.getElementById("trialBadge");
+
+
+/* ==========================================
+   TRIAL STATUS
+========================================== */
+
+const TRIAL_STORAGE_KEY = "fyp_trial_used";
+
+const trialUsed =
+    localStorage.getItem(TRIAL_STORAGE_KEY) === "true";
+
+
+/* ==========================================
+   BUDGET SYSTEM (Dynamic Multiplier Calculation)
+========================================== */
+
+const trialBudget = (siteConfig && (siteConfig.trialPrice || siteConfig.trialBudget)) ? (siteConfig.trialPrice || siteConfig.trialBudget) : 50;
+
+function getBasePrice() {
+    return (siteConfig && (siteConfig.standardPrice || siteConfig.standardBasePrice))
+        ? (siteConfig.standardPrice || siteConfig.standardBasePrice)
+        : (siteConfig && siteConfig.coinRate ? Math.round(siteConfig.coinRate * 100) : 230);
+}
+
+let isTrial = !trialUsed;
+let multiplier = 1; // 1x, 2x, 3x, 4x ... (+ click korle base price er sathe * hobe)
+const maxMultiplier = 200; // Unlimited scaling up to 200x
+
+function getCurrentBudget() {
+    return isTrial ? trialBudget : (multiplier * getBasePrice());
+}
+
+
+/* ==========================================
+   ESTIMATE CALCULATION & ANIMATION
+========================================== */
+
+let activeAnimFrames = {};
+
+function animateEstimateNumber(id, finalValue, duration = 650) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (activeAnimFrames[id]) {
+        window.cancelAnimationFrame(activeAnimFrames[id]);
+    }
+
+    const currentText = el.innerText || '0';
+    const startVal = parseInt(currentText.replace(/,/g, ''), 10) || 0;
+    const startTime = performance.now();
+
+    function step(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out quart
+        const easeProgress = 1 - Math.pow(1 - progress, 4);
+        const current = Math.floor(startVal + (finalValue - startVal) * easeProgress);
+        el.innerText = current.toLocaleString();
+
+        if (progress < 1) {
+            activeAnimFrames[id] = window.requestAnimationFrame(step);
+        } else {
+            el.innerText = finalValue.toLocaleString();
+            delete activeAnimFrames[id];
+        }
+    }
+
+    activeAnimFrames[id] = window.requestAnimationFrame(step);
+}
+
+function calculateEstimates(budget, promoType = "Video Views", animate = true) {
+    const results = document.getElementById("estimate_results");
+    const resultDisplay = document.getElementById("resultDisplay");
+    if (!results) return;
+
+    const rates = (siteConfig.rates && siteConfig.rates[promoType]) || (siteConfig.rates && siteConfig.rates['Video Views']) || {};
+    let animTasks = [];
+    let summaryParts = ['সর্বনিম্ন'];
+
+    let html = '<hr class="estimate-hr"><div class="d-flex flex-wrap justify-content-center gap-3"><div class="estimate-badge"><span class="lowest-badge" style="color:#3B82F6;">সর্বনিম্ন <i class="bi bi-caret-right-fill ms-1" style="color: #3B82F6;"></i></span></div>';
+
+    if (rates.view) {
+        const val = Math.floor(budget * rates.view);
+        html += '<div class="estimate-badge"><i class="bi bi-eye"></i><label>ভিউ:</label><span class="count-target" id="anim-view">0</span></div>';
+        animTasks.push({ id: 'anim-view', val: val });
+        summaryParts.push('ভিউ: ' + val.toLocaleString());
+    }
+
+    if (promoType === 'Video Views' && rates.like) {
+        const val = Math.floor(budget * rates.like);
+        html += '<div class="estimate-badge"><i class="bi bi-heart"></i><label>লাইক:</label><span class="count-target" id="anim-secondary">0</span></div>';
+        animTasks.push({ id: 'anim-secondary', val: val });
+        summaryParts.push('লাইক: ' + val.toLocaleString());
+    } else if (promoType === 'Likes & Comments') {
+        const val = Math.floor(budget * (rates.like || rates.comment));
+        html += '<div class="estimate-badge"><i class="bi bi-heart"></i><label>লাইক, কমেন্ট:</label><span class="count-target" id="anim-secondary">0</span></div>';
+        animTasks.push({ id: 'anim-secondary', val: val });
+        summaryParts.push('লাইক, কমেন্ট: ' + val.toLocaleString());
+    } else if (promoType === 'More Followers' && rates.follower) {
+        const val = Math.floor(budget * rates.follower);
+        html += '<div class="estimate-badge"><i class="bi bi-person-plus"></i><label>ফলোয়ার:</label><span class="count-target" id="anim-secondary">0</span></div>';
+        animTasks.push({ id: 'anim-secondary', val: val });
+        summaryParts.push('ফলোয়ার: ' + val.toLocaleString());
+    }
+
+    html += '</div>';
+
+    const currentType = results.dataset.currentType;
+    const viewEl = document.getElementById('anim-view');
+    const secEl = document.getElementById('anim-secondary');
+
+    if (currentType === promoType && viewEl && secEl) {
+        animTasks.forEach(task => {
+            if (animate) {
+                animateEstimateNumber(task.id, task.val);
+            } else {
+                const el = document.getElementById(task.id);
+                if (el) el.innerText = task.val.toLocaleString();
+            }
+        });
+    } else {
+        results.innerHTML = html;
+        results.dataset.currentType = promoType;
+        animTasks.forEach(task => {
+            if (animate) {
+                animateEstimateNumber(task.id, task.val);
+            } else {
+                const el = document.getElementById(task.id);
+                if (el) el.innerText = task.val.toLocaleString();
+            }
+        });
+    }
+
+    if (resultDisplay) {
+        resultDisplay.textContent = summaryParts.join(' | ');
+    }
+}
+
+
+/* ==========================================
+   UPDATE UI
+========================================== */
+
+function updateBudgetUI(
+    animate = true
+) {
+
+    const budget = getCurrentBudget();
+    const prefix = (siteConfig && siteConfig.budgetPrefix !== undefined) ? siteConfig.budgetPrefix : '';
+    const suffix = (siteConfig && siteConfig.budgetSuffix !== undefined) ? siteConfig.budgetSuffix : '';
+
+
+    budgetDisplay.textContent =
+        prefix + budget + suffix;
+
+
+    if (orderAmount) orderAmount.textContent = budget;
+
+
+    const resultTitleAmount = document.getElementById("resultTitleAmount");
+    if (resultTitleAmount) {
+        resultTitleAmount.textContent = prefix + budget + suffix;
+    }
+
+
+    const promoSelect =
+        document.getElementById("promoType");
+    const activePromo =
+        promoSelect ? promoSelect.value : "Video Views";
+
+
+    calculateEstimates(budget, activePromo, animate);
+
+
+    /*
+     * Trial status
+     */
+
+    if (isTrial) {
+
+        if (trialBadge) {
+            trialBadge.style.display =
+                "inline-block";
+        }
+
+    } else {
+
+        if (trialBadge) {
+            trialBadge.style.display =
+                "none";
+        }
+
+    }
+
+
+    /*
+     * Button state
+     */
+
+    minusBtn.disabled = isTrial || (trialUsed && multiplier === 1);
+
+    plusBtn.disabled = !isTrial && multiplier >= maxMultiplier;
+
+}
+
+
+/* ==========================================
+   PLUS
+========================================== */
+
+plusBtn.addEventListener(
+    "click",
+    function () {
+
+        if (isTrial) {
+            isTrial = false;
+            multiplier = 1;
+        } else {
+            if (multiplier < maxMultiplier) {
+                multiplier++;
+            }
+        }
+
+        updateBudgetUI(true);
+
+    }
+);
+
+
+/* ==========================================
+   MINUS
+========================================== */
+
+minusBtn.addEventListener(
+    "click",
+    function () {
+
+        if (!isTrial) {
+            if (multiplier > 1) {
+                multiplier--;
+            } else if (!trialUsed) {
+                isTrial = true;
+            }
+        }
+
+        updateBudgetUI(true);
+
+    }
+);
+
+
+/* ==========================================
+   PAYMENT METHOD (From theme.xml)
+========================================== */
+
+function populatePaymentMethods() {
+    const select = document.getElementById('payment_method');
+    if (!select || typeof siteConfig === 'undefined' || !siteConfig.payments) return;
+
+    select.innerHTML = '<option disabled selected value="">পেমেন্ট মাধ্যম বেছে নিন</option>';
+
+    for (const method in siteConfig.payments) {
+        const option = document.createElement('option');
+        option.value = method;
+        option.text = `${method} (${siteConfig.payments[method].type})`;
+        select.add(option);
+    }
+}
+
+window.updatePaymentInfo = function() {
+    const select = document.getElementById('payment_method');
+    if (!select) return;
+
+    const method = select.value,
+          box = document.getElementById('payment_info_box'),
+          num = document.getElementById('payment_number'),
+          methodDisp = document.getElementById('method_display'),
+          accType = document.getElementById('account_type');
+
+    if (!box) return;
+
+    if (method && typeof siteConfig !== 'undefined' && siteConfig.payments && siteConfig.payments[method]) {
+        if (num) num.innerText = siteConfig.payments[method].number;
+        if (methodDisp) methodDisp.innerText = method;
+        if (accType) accType.innerText = siteConfig.payments[method].type;
+        box.style.display = 'block';
+        hideError("paymentMethodError");
+    } else {
+        box.style.display = 'none';
+    }
+};
+
+window.copyNumber = function() {
+    const numEl = document.getElementById('payment_number');
+    if (!numEl) return;
+    const num = numEl.innerText.trim();
+
+    function showModal() {
+        const copyModal = document.getElementById('copyModal');
+        const copyMessage = document.getElementById('copyMessage');
+        if (copyModal && copyMessage) {
+            copyMessage.innerText = "নম্বরটি কপি করা হয়েছে: " + num;
+            copyModal.style.display = 'flex';
+            setTimeout(() => {
+                copyModal.style.display = 'none';
+            }, 2500);
+        }
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(num).then(showModal).catch(() => {
+            fallbackCopy(num, showModal);
+        });
+    } else {
+        fallbackCopy(num, showModal);
+    }
+};
+
+function fallbackCopy(text, callback) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        if (callback) callback();
+    } catch (err) {
+        console.error('Fallback copy failed', err);
+    }
+    document.body.removeChild(textArea);
+}
+
+
+/* ==========================================
+   VALIDATION
+========================================== */
+
+function showError(id) {
+
+    document.getElementById(id)
+        .style.display = "block";
+
+}
+
+
+function hideError(id) {
+
+    document.getElementById(id)
+        .style.display = "none";
+
+}
+
+
+function validateTikTokLink(value) {
+
+    try {
+
+        const url =
+            new URL(value);
+
+        return url.hostname
+            .toLowerCase()
+            .includes("tiktok.com");
+
+    } catch {
+
+        return false;
+
+    }
+
+}
+
+
+function validateBangladeshNumber(value) {
+
+    return /^01[3-9]\d{8}$/.test(value);
+
+}
+
+
+/* ==========================================
+   FORM SUBMIT
+========================================== */
+
+document
+    .getElementById("orderForm")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            const tiktokLink =
+                document
+                    .getElementById("tiktokLink")
+                    .value
+                    .trim();
+
+
+            const whatsapp =
+                document
+                    .getElementById("whatsapp")
+                    .value
+                    .trim();
+
+
+            const paymentMethodSelect =
+                document.getElementById("payment_method");
+            const paymentMethod =
+                paymentMethodSelect ? paymentMethodSelect.value.trim() : "";
+
+
+            const paymentInfo =
+                document
+                    .getElementById("paymentInfo")
+                    .value
+                    .trim();
+
+
+            let valid = true;
+
+
+            /* TikTok */
+
+            if (
+                !validateTikTokLink(
+                    tiktokLink
+                )
+            ) {
+
+                showError(
+                    "linkError"
+                );
+
+                valid = false;
+
+            } else {
+
+                hideError(
+                    "linkError"
+                );
+
+            }
+
+
+            /* WhatsApp */
+
+            if (
+                !validateBangladeshNumber(
+                    whatsapp
+                )
+            ) {
+
+                showError(
+                    "whatsappError"
+                );
+
+                valid = false;
+
+            } else {
+
+                hideError(
+                    "whatsappError"
+                );
+
+            }
+
+
+            /* Payment Method */
+
+            if (!paymentMethod) {
+
+                showError(
+                    "paymentMethodError"
+                );
+
+                valid = false;
+
+            } else {
+
+                hideError(
+                    "paymentMethodError"
+                );
+
+            }
+
+
+            /* Payment */
+
+            if (
+                paymentInfo.length < 4
+            ) {
+
+                showError(
+                    "paymentError"
+                );
+
+                valid = false;
+
+            } else {
+
+                hideError(
+                    "paymentError"
+                );
+
+            }
+
+
+            if (!valid) {
+
+                return;
+
+            }
+
+
+            /* Duplicate TrxID Check */
+
+            try {
+                const existingOrders = JSON.parse(localStorage.getItem('coinstore_orders') || '[]');
+                const isDuplicate = existingOrders.some(function(o) {
+                    return o.trxid && o.trxid.trim().toLowerCase() === paymentInfo.toLowerCase();
+                });
+
+                if (isDuplicate) {
+                    showError("trxidDuplicateError");
+                    hideError("paymentError");
+                    return;
+                } else {
+                    hideError("trxidDuplicateError");
+                }
+            } catch(e) {}
+
+
+            const selectedBudget = getCurrentBudget();
+
+
+            /*
+             * Trial consumed
+             */
+
+            if (isTrial || selectedBudget === trialBudget) {
+
+                localStorage.setItem(
+                    TRIAL_STORAGE_KEY,
+                    "true"
+                );
+
+            }
+
+
+            const promoSelect =
+                document.getElementById("promoType");
+            const promoText =
+                promoSelect
+                    ? promoSelect.options[promoSelect.selectedIndex].text
+                    : "ভিডিও ভিউ বাড়ান";
+
+            const payNumEl = document.getElementById("payment_number");
+            const payNum = payNumEl ? payNumEl.innerText.trim() : "";
+
+            const orderData = {
+
+                package:
+                    (isTrial || selectedBudget === trialBudget)
+                        ? "ট্রায়াল অফার প্যাকেজ"
+                        : "রেগুলার প্যাকেজ",
+
+                promo:
+                    promoText,
+
+                amount:
+                    selectedBudget,
+
+                estimatedResult:
+                    resultDisplay.textContent,
+
+                tiktok:
+                    tiktokLink,
+
+                whatsapp:
+                    whatsapp,
+
+                method:
+                    paymentMethod,
+
+                paymentNumber:
+                    payNum,
+
+                payment:
+                    paymentInfo,
+
+                trxid:
+                    paymentInfo,
+
+                date:
+                    new Date().toLocaleString(),
+
+                time:
+                    new Date()
+                        .toISOString()
+
+            };
+
+
+            try {
+                const existingOrders = JSON.parse(localStorage.getItem('coinstore_orders') || '[]');
+                existingOrders.unshift(orderData);
+                localStorage.setItem('coinstore_orders', JSON.stringify(existingOrders));
+            } catch(e) {}
+
+
+            console.log(
+                "Order Data:",
+                orderData
+            );
+
+
+            /* ==========================================
+               📢 TELEGRAM ADMIN NOTIFICATION
+            ========================================== */
+
+            // Fix #2: Submit button disable — double submit prevent
+            var submitBtn = document.getElementById('orderSubmitBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = '⏳ পাঠানো হচ্ছে...';
+            }
+
+            (function sendTelegramNotification(data) {
+                const BOT_TOKEN = (siteConfig && siteConfig.telegramBotToken) ? siteConfig.telegramBotToken : '';
+                const CHAT_ID   = (siteConfig && siteConfig.telegramChatId)   ? siteConfig.telegramChatId   : '';
+                const NOTIFY    = (siteConfig && siteConfig.telegramNotify !== undefined) ? siteConfig.telegramNotify : true;
+
+                if (!NOTIFY || !BOT_TOKEN || !CHAT_ID) return;
+
+                // Fix #1: TikTok URL-e Markdown special chars escape kora (safe Markdown)
+                function escapeMd(str) {
+                    return String(str).replace(/[_*[\]()~`>#+\-=|{}.!\\]/g, '\\$&');
+                }
+
+                const message =
+                    "\uD83D\uDED2 *ForYouPack \u2014 \u09A8\u09A4\u09C1\u09A8 \u0985\u09B0\u09CD\u09A1\u09BE\u09B0!*\n" +
+                    "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
+                    "\uD83D\uDCE6 \u09AA\u09CD\u09AF\u09BE\u0995\u09C7\u099C: " + data.package + "\n" +
+                    "\uD83D\uDCE2 \u09AA\u09CD\u09B0\u09AE\u09CB\u099F\u09C7\u09B0 \u09A7\u09B0\u09A8: " + data.promo + "\n" +
+                    "\uD83D\uDCB0 \u09AC\u09BE\u099C\u09C7\u099F: *" + data.amount + " \u099F\u09BE\u0995\u09BE*\n" +
+                    "\uD83D\uDCB3 \u09AA\u09C7\u09AE\u09C7\u09A8\u09CD\u099F: " + data.method + "\n" +
+                    "\uD83D\uDD11 TrxID: `" + data.trxid + "`\n" +
+                    "\uD83C\uDFB5 \u09AD\u09BF\u09A1\u09BF\u0993: " + data.tiktok + "\n" +
+                    "\uD83D\uDCF1 WhatsApp: " + data.whatsapp + "\n" +
+                    "\uD83D\uDD50 \u09B8\u09AE\u09AF\u09BC: " + data.date + "\n" +
+                    "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
+                    "\u26A1 \u09A8\u09A4\u09C1\u09A8 \u0985\u09B0\u09CD\u09A1\u09BE\u09B0! \u09A6\u09CD\u09B0\u09C1\u09A4 \u09AA\u09CD\u09B0\u09B8\u09C7\u09B8 \u0995\u09B0\u09C1\u09A8\u0964";
+
+                fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: "Markdown",
+                        disable_web_page_preview: true
+                    })
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(result) {
+                    if (result.ok) {
+                        console.log("\u2705 Telegram notification sent successfully.");
+                    } else {
+                        console.warn("\u26A0\uFE0F Telegram error:", result.description);
+                    }
+                })
+                .catch(function(err) {
+                    console.error("\u274C Telegram fetch failed:", err);
+                })
+                .finally(function() {
+                    // Fix #3: Button restore + Form reset after submit
+                    var btn = document.getElementById('orderSubmitBtn');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = '\u0985\u09B0\u09CD\u09A1\u09BE\u09B0 \u0995\u09B0\u09C1\u09A8 \u098F\u0996\u09A8\u0987';
+                    }
+                });
+            })(orderData);
+
+
+            // Populate and show Order Success Popup Box (Modal)
+            var promoEl = document.getElementById("successModalPromo");
+            if (promoEl) promoEl.textContent = orderData.promo;
+
+            var budgetEl = document.getElementById("successModalBudget");
+            if (budgetEl) budgetEl.textContent = orderData.amount + " টাকা";
+
+            var trxidEl = document.getElementById("successModalTrxid");
+            if (trxidEl) trxidEl.textContent = orderData.trxid;
+
+            var waBtn = document.getElementById("successModalWaBtn");
+            if (waBtn) {
+                var waNum = (siteConfig && siteConfig.whatsappNumber) ? siteConfig.whatsappNumber : '8801845464034';
+                var cleanWaNum = waNum.toString().trim().replace(/[^0-9]/g, '');
+                if (cleanWaNum.startsWith('01')) cleanWaNum = '88' + cleanWaNum;
+
+                var waText =
+                    '🛒 *ForYouPack — নতুন অর্ডার কনফার্মেশন*\n' +
+                    '━━━━━━━━━━━━━━━━\n' +
+                    '📋 *অর্ডার তথ্য*\n' +
+                    '━━━━━━━━━━━━━━━━\n' +
+                    '🔖 প্যাকেজ: ' + orderData.package + '\n' +
+                    '📢 প্রমোটের ধরন: ' + orderData.promo + '\n' +
+                    '💰 বাজেট: ' + orderData.amount + ' টাকা\n' +
+                    '💳 পেমেন্ট মাধ্যম: ' + orderData.method + '\n' +
+                    '🔑 TrxID: ' + orderData.trxid + '\n' +
+                    '🎵 ভিডিও লিংক: ' + orderData.tiktok + '\n' +
+                    '📱 WhatsApp: ' + orderData.whatsapp + '\n' +
+                    '━━━━━━━━━━━━━━━━\n' +
+                    '⚡ অনুগ্রহ করে আমার অর্ডারটি কনফার্ম করুন।';
+
+                waBtn.href = 'https://wa.me/' + cleanWaNum + '?text=' + encodeURIComponent(waText);
+            }
+
+            var orderModal = document.getElementById("orderSuccessModal");
+            if (orderModal) orderModal.style.display = "flex";
+
+            // Save trial reload state
+            window._shouldReloadOnClose = (isTrial || selectedBudget === trialBudget);
+
+        }
+    );
+
+
+/* ==========================================
+   INITIAL
+========================================== */
+
+updateBudgetUI(false);
+populatePaymentMethods();
+
+const promoTypeSelect = document.getElementById("promoType");
+if (promoTypeSelect) {
+    promoTypeSelect.addEventListener("change", function() {
+        updateBudgetUI(true);
+    });
+}
+
+
+/* ==========================================
+   HEADER & NAV-MENU FUNCTIONS (From Theme)
+========================================== */
+
+function openNavMenu() {
+    var menu = document.getElementById('nav-menu');
+    var overlay = document.getElementById('navOverlay');
+    if (menu) menu.classList.add('active');
+    if (overlay) overlay.classList.add('active');
+}
+
+function closeNavMenu() {
+    var menu = document.getElementById('nav-menu');
+    var overlay = document.getElementById('navOverlay');
+    if (menu) menu.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+}
+
+window.checkStatus = function() {
+    var searchInput = document.getElementById('header_trxid_search');
+    var trxid = searchInput ? searchInput.value.trim() : '';
+    if (!trxid) {
+        var errModal = document.getElementById('searchErrorModal');
+        if (errModal) errModal.style.display = 'flex';
+        return;
+    }
+
+    var orders = JSON.parse(localStorage.getItem('coinstore_orders') || '[]');
+    var order = orders.find(function(o) { return o.trxid === trxid; });
+    var resultDiv = document.getElementById('statusResult');
+
+    if (order) {
+        var orderTimeStr = "N/A";
+        var diffMinutes = 999;
+
+        try {
+            var orderDateObj = new Date(order.time || order.date);
+            if (!isNaN(orderDateObj.getTime())) {
+                orderTimeStr = orderDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                diffMinutes = (new Date().getTime() - orderDateObj.getTime()) / (1000 * 60);
+            }
+        } catch (e) {}
+
+        var statusText = "Completed";
+        var statusColor = "#2ecc71";
+
+        if (diffMinutes < 1) {
+            statusText = "Received";
+            statusColor = "#25d366";
+        } else if (diffMinutes >= 1 && diffMinutes <= 20) {
+            statusText = "Pending";
+            statusColor = "#ffc107";
+        }
+
+        var statusTitle = document.getElementById('statusModalTitle');
+        if (statusTitle) statusTitle.innerHTML = 'অর্ডার স্ট্যাটাস';
+
+        var pkgName = order.promo || order.package || order.type || 'ভিডিও ভিউ বাড়ান';
+        var amountVal = order.amount || order.budget || order.total || '';
+        var budgetText = amountVal;
+        var waMessage = encodeURIComponent(
+            '🛒 *ForYouPack — অর্ডার স্ট্যাটাস চেক*\n' +
+            '━━━━━━━━━━━━━━━━\n' +
+            '📋 *অর্ডার তথ্য*\n' +
+            '━━━━━━━━━━━━━━━━\n' +
+            '🔖 প্যাকেজ: ' + (order.package || 'রেগুলার প্যাকেজ') + '\n' +
+            '📢 প্রমোটের ধরন: ' + pkgName + '\n' +
+            '💰 বাজেট: ' + budgetText + ' টাকা\n' +
+            (order.method ? '💳 পেমেন্ট মাধ্যম: ' + order.method + '\n' : '') +
+            '🔑 TrxID: ' + order.trxid + '\n' +
+            (order.tiktok ? '🎵 ভিডিও লিংক: ' + order.tiktok + '\n' : '') +
+            (order.whatsapp ? '📱 WhatsApp: ' + order.whatsapp + '\n' : '') +
+            '🕐 অর্ডার টাইম: ' + orderTimeStr + '\n' +
+            '📊 স্ট্যাটাস: ' + statusText + '\n' +
+            '━━━━━━━━━━━━━━━━\n' +
+            '⚡ দয়া করে আমার অর্ডারটি প্রসেস করুন।'
+        );
+
+        var html = '' +
+            '<div style="text-align:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">' +
+                '<div style="display:inline-flex; align-items:center; gap:8px; padding:4px 15px; border-radius:20px; background:' + statusColor + '1a; border:1px solid ' + statusColor + '40;">' +
+                    '<span style="width:8px; height:8px; border-radius:50%; background:' + statusColor + '; display:inline-block; box-shadow:0 0 8px ' + statusColor + ';"></span>' +
+                    '<span style="color:' + statusColor + '; font-weight:700; font-size:0.85rem; text-transform:uppercase;">' + statusText + '</span>' +
+                '</div>' +
+                '<div style="color:rgba(255,255,255,0.6); font-size:0.8rem; margin-top:6px;">' +
+                    '<i class="bi bi-clock-history" style="margin-right:4px;"></i> অর্ডার টাইম: <span style="color:white;">' + orderTimeStr + '</span>' +
+                '</div>' +
+            '</div>' +
+            '<div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:12px; font-size:0.85rem;">' +
+                '<div style="display:flex; justify-content:space-between; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.08);">' +
+                    '<span style="color:rgba(255,255,255,0.6); font-size:0.85rem;">প্রমোটের ধরন</span>' +
+                    '<span style="font-weight:bold; color:white;">' + pkgName + '</span>' +
+                '</div>' +
+                '<div style="display:flex; justify-content:space-between; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.08);">' +
+                    '<span style="color:rgba(255,255,255,0.6); font-size:0.85rem;">ট্রানজেকশন আইডি</span>' +
+                    '<span style="font-weight:bold; color:white; font-family:monospace;">' + order.trxid + '</span>' +
+                '</div>' +
+                (order.method ?
+                '<div style="display:flex; justify-content:space-between; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.08);">' +
+                    '<span style="color:rgba(255,255,255,0.6); font-size:0.85rem;">পেমেন্ট মাধ্যম</span>' +
+                    '<span style="font-weight:bold; color:white;">' + order.method + '</span>' +
+                '</div>' : '') +
+                '<div style="display:flex; justify-content:space-between;">' +
+                    '<span style="color:rgba(255,255,255,0.6); font-size:0.85rem;">মোট বাজেট</span>' +
+                    '<span style="font-weight:bold; color:#25f4ee;">' + budgetText + '</span>' +
+                '</div>' +
+            '</div>' +
+            '<div style="margin-top:16px; text-align:center;">' +
+                '<p style="color:rgba(255,255,255,0.6); font-size:0.8rem; margin:0 0 10px 0;">দ্রুত সার্ভিস পেতে সাপোর্ট এ চ্যাট করুন</p>' +
+                '<a href="https://wa.me/' + (siteConfig.whatsappNumber || '8801845464034') + '?text=' + waMessage + '" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg, #25d366 0%, #128c7e 100%); color:white; text-decoration:none; padding:11px; border-radius:12px; font-weight:bold; font-size:0.95rem;">' +
+                    '<i class="fab fa-whatsapp" style="font-size:1.3rem;"></i> Support Chat' +
+                '</a>' +
+            '</div>';
+
+        if (resultDiv) resultDiv.innerHTML = html;
+    } else {
+        if (resultDiv) {
+            resultDiv.innerHTML = '<div style="text-align:center; padding:25px; color:rgba(255,255,255,0.6);">' +
+                '<i class="bi bi-search" style="font-size:2rem; display:block; margin-bottom:10px;"></i>' +
+                'দুঃখিত! এই TrxID দিয়ে কোনো অর্ডার পাওয়া যায়নি।' +
+            '</div>';
+        }
+    }
+
+    var modal = document.getElementById('statusModal');
+    if (modal) modal.style.display = 'flex';
+};
+
+// Close Order Success Modal
+function closeOrderSuccessModal() {
+    var orderModal = document.getElementById('orderSuccessModal');
+    if (orderModal) orderModal.style.display = 'none';
+
+    if (window._shouldReloadOnClose) {
+        window._shouldReloadOnClose = false;
+        window.location.reload();
+    }
+}
+
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeNavMenu();
+        closeOrderSuccessModal();
+        var searchError = document.getElementById('searchErrorModal');
+        if (searchError) searchError.style.display = 'none';
+        var statusModal = document.getElementById('statusModal');
+        if (statusModal) statusModal.style.display = 'none';
+        var copyModal = document.getElementById('copyModal');
+        if (copyModal) copyModal.style.display = 'none';
+    }
+});
+
+/* ==========================================
+   ACCORDION & SOCIAL LINKS (From theme.xml)
+========================================== */
+document.querySelectorAll('.custom-accordion .accordion-button').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var targetId = this.getAttribute('data-bs-target');
+        var targetEl = document.querySelector(targetId);
+        if (!targetEl) return;
+        var isAlreadyOpen = targetEl.classList.contains('show');
+        var parentAccordion = this.closest('.custom-accordion');
+
+        if (parentAccordion) {
+            parentAccordion.querySelectorAll('.accordion-collapse').forEach(function(item) {
+                item.classList.remove('show');
+            });
+            parentAccordion.querySelectorAll('.accordion-button').forEach(function(b) {
+                b.classList.add('collapsed');
+            });
+        }
+
+        if (!isAlreadyOpen) {
+            targetEl.classList.add('show');
+            this.classList.remove('collapsed');
+        }
+    });
+});
+
+function applySiteConfigSocial() {
+    if (typeof siteConfig === 'undefined') return;
+
+    // 1. Social Section Title in Footer
+    var titleEl = document.getElementById('footer-social-title');
+    if (titleEl && siteConfig.socialTitle !== undefined) {
+        if (siteConfig.socialTitle && siteConfig.socialTitle.trim()) {
+            titleEl.textContent = siteConfig.socialTitle;
+            titleEl.style.display = 'block';
+        } else {
+            titleEl.style.display = 'none';
+        }
+    }
+
+    // 2. Build WhatsApp URL
+    var cleanNum = (siteConfig.whatsappNumber || '').toString().trim().replace(/[^0-9]/g, '');
+    if (cleanNum && cleanNum.startsWith('01')) {
+        cleanNum = '88' + cleanNum;
+    }
+
+    var waUrl = '';
+    if (siteConfig.socialLinks && siteConfig.socialLinks.whatsapp && siteConfig.socialLinks.whatsapp.trim()) {
+        waUrl = siteConfig.socialLinks.whatsapp.trim();
+    } else if (cleanNum) {
+        waUrl = 'https://wa.me/' + cleanNum;
+        if (siteConfig.whatsappDefaultMessage && siteConfig.whatsappDefaultMessage.trim()) {
+            waUrl += '?text=' + encodeURIComponent(siteConfig.whatsappDefaultMessage.trim());
+        }
+    }
+
+    // 3. Floating WhatsApp Button Control
+    var waFloat = document.getElementById('wa-float-btn');
+    if (waFloat) {
+        if (siteConfig.showWhatsappChat === false) {
+            waFloat.style.display = 'none';
+        } else {
+            waFloat.style.display = 'inline-flex';
+            if (waUrl) waFloat.href = waUrl;
+            var waTextEl = document.getElementById('wa-float-text');
+            if (waTextEl && siteConfig.whatsappChatText) {
+                waTextEl.textContent = siteConfig.whatsappChatText;
+            }
+        }
+    }
+
+    // 4. Footer Social Links Control (Only show configured links)
+    var linksMap = {
+        'fb-footer-link': siteConfig.socialLinks ? siteConfig.socialLinks.facebook : null,
+        'wa-footer-link': waUrl,
+        'tiktok-footer-link': siteConfig.socialLinks ? siteConfig.socialLinks.tiktok : null,
+        'yt-footer-link': siteConfig.socialLinks ? siteConfig.socialLinks.youtube : null,
+        'insta-footer-link': siteConfig.socialLinks ? siteConfig.socialLinks.instagram : null,
+        'tg-footer-link': siteConfig.socialLinks ? siteConfig.socialLinks.telegram : null
+    };
+
+    var hasAnyLink = false;
+    for (var id in linksMap) {
+        var el = document.getElementById(id);
+        if (el) {
+            var url = linksMap[id];
+            if (url && typeof url === 'string' && url.trim().length > 0) {
+                el.href = url.trim();
+                el.style.display = 'inline-flex';
+                hasAnyLink = true;
+            } else {
+                el.style.display = 'none';
+            }
+        }
+    }
+
+    var linksWrapper = document.getElementById('footer-social-links');
+    if (linksWrapper) {
+        linksWrapper.style.display = hasAnyLink ? 'flex' : 'none';
+    }
+}
+
+// Run immediately
+applySiteConfigSocial();
+window.applySiteConfigSocial = applySiteConfigSocial;
+
+</script>
+
+</body>
+</html>
